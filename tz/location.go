@@ -18,6 +18,7 @@ type Location struct {
 	Longitude float32
 	Altitude  float32
 	Accuracy  float32
+	Name      string
 }
 
 func (l *Location) WriteGeolocation(dryRun bool) error {
@@ -53,6 +54,8 @@ func (l *Location) WriteGeolocation(dryRun bool) error {
 	if err != nil {
 		return err
 	}
+
+	fmt.Printf("Successfully updated %s with %s location\n", etcGeolocation, l.Name)
 
 	return nil
 }

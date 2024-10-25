@@ -82,6 +82,10 @@ func performCommand(cmd *cobra.Command, args []string) error {
 		help(cmd, args)
 	}
 
+	if config.DryRun {
+		config.Verbose = true
+	}
+
 	location, err := Location()
 	if err != nil {
 		return fmt.Errorf("unable to find location: %s", err)
@@ -132,6 +136,7 @@ func defaultLocation(err error) (*tz.Location, error) {
 			Longitude: config.DefaultLongitude,
 			Altitude:  config.DefaultAltitude,
 			Accuracy:  config.DefaultAccuracy,
+			Name:      "Default",
 		}, nil
 	} else {
 		return nil, err

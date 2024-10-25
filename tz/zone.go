@@ -52,6 +52,7 @@ func ZoneEntry(name string, verbose bool) (*Location, error) {
 				Longitude: long,
 				Altitude:  0,
 				Accuracy:  1000,
+				Name:      name,
 			}, nil
 		}
 	}
