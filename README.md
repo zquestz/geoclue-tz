@@ -5,14 +5,17 @@
 Generate geoclue /etc/geolocation based on tz zone info.
 
 ```text
+Generate geoclue /etc/geolocation based on tz zone info.
+
 Usage:
   geoclue-tz [flags]
 
 Flags:
-  -d, --dry-run           dry run debug mode
-  -h, --help              help for geoclue-tz
-  -l, --location string   enable custom location
-      --version           display version
+  -c, --completion string   completion script for bash, zsh or fish
+  -d, --dry-run             dry run debug mode
+  -h, --help                help for geoclue-tz
+  -l, --location string     enable custom location
+      --version             display version
 ```
 
 ## Install
@@ -48,6 +51,36 @@ locations [
     name = home
   }
 ]
+```
+
+## Shell Autocompletion
+
+To set up autocompletion:
+
+### Bash Linux
+
+```zsh
+geoclue-tz --completion bash > /etc/bash_completion.d/geoclue-tz
+```
+
+### Bash MacOS
+
+```zsh
+geoclue-tz --completion bash > /usr/local/etc/bash_completion.d/geoclue-tz
+```
+
+### Zsh
+
+Generate a `_geoclue-tz` completion script and put it somewhere in your `$fpath`:
+
+```zsh
+geoclue-tz --completion zsh > /usr/local/share/zsh/site-functions/_geoclue-tz
+```
+
+### Fish
+
+```zsh
+geoclue-tz --completion fish > ~/.config/fish/completions/geoclue-tz.fish
 ```
 
 ## License

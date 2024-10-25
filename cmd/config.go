@@ -15,6 +15,7 @@ type Config struct {
 	DisplayVersion bool           `json:"-"`
 	Location       string         `json:"location"`
 	DryRun         bool           `json:"dryRun,string"`
+	Completion     string         `json:"completion"`
 }
 
 // Load reads the configuration from /etc/geoclue-tz.conf

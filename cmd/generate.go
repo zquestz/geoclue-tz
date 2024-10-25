@@ -54,6 +54,26 @@ func capitalize(str string) string {
 	return string(tmp)
 }
 
+func completion(cmd *cobra.Command, c string) {
+	switch c {
+	case "bash":
+		err := cmd.GenBashCompletion(os.Stdout)
+		if err != nil {
+			bail(fmt.Errorf("failed to generate bash completion: %w", err))
+		}
+	case "zsh":
+		if err := cmd.GenZshCompletion(os.Stdout); err != nil {
+			bail(fmt.Errorf("failed to generate zsh completion: %w", err))
+		}
+	case "fish":
+		if err := cmd.GenFishCompletion(os.Stdout, true); err != nil {
+			bail(fmt.Errorf("failed to generate fish completion: %w", err))
+		}
+	default:
+		bail(fmt.Errorf("completion not supported: %s", c))
+	}
+}
+
 func prepareFlags() {
 	GenerateCmd.PersistentFlags().BoolVar(
 		&config.DisplayVersion, "version", false, "display version")
@@ -61,10 +81,31 @@ func prepareFlags() {
 		&config.DryRun, "dry-run", "d", config.DryRun, "dry run debug mode")
 	GenerateCmd.PersistentFlags().StringVarP(
 		&config.Location, "location", "l", config.Location, "enable custom location")
+	GenerateCmd.PersistentFlags().StringVarP(
+		&config.Completion, "completion", "c", config.Completion, "completion script for bash, zsh or fish")
+
+	err := GenerateCmd.RegisterFlagCompletionFunc("completion", func(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
+		return []string{"bash", "fish", "zsh"}, cobra.ShellCompDirectiveNoFileComp
+	})
+	if err != nil {
+		bail(err)
+	}
+
+	err = GenerateCmd.RegisterFlagCompletionFunc("location", func(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
+		return listLocations(), cobra.ShellCompDirectiveNoFileComp
+	})
+	if err != nil {
+		bail(err)
+	}
 }
 
 // Where all the work happens.
 func performCommand(cmd *cobra.Command, args []string) error {
+	if config.Completion != "" {
+		completion(cmd, config.Completion)
+		return nil
+	}
+
 	if config.DisplayVersion {
 		fmt.Printf("%s %s\n", appName, version)
 		return nil
@@ -124,6 +165,16 @@ func Location() (*tz.Location, error) {
 	}
 
 	return entry, nil
+}
+
+// listLocations returns a list of custom locations.
+func listLocations() []string {
+	locations := []string{}
+	for _, loc := range config.Locations {
+		locations = append(locations, loc.Name)
+	}
+
+	return locations
 }
 
 // Returns the custom location,
