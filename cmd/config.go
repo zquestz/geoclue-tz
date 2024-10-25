@@ -10,13 +10,13 @@ import (
 
 // Config stores all the application configuration.
 type Config struct {
-	DefaultLatitude  float32 `json:"defaultLatitude"`
-	DefaultLongitude float32 `json:"defaultLongitude"`
-	DefaultAltitude  float32 `json:"defaultAltitude"`
-	DefaultAccuracy  float32 `json:"defaultAccuracy"`
-	Verbose          bool    `json:"verbose"`
-	DisplayVersion   bool    `json:"version"`
-	DryRun           bool    `json:"dryRun"`
+	DefaultLatitude  float32 `json:"defaultLatitude,string"`
+	DefaultLongitude float32 `json:"defaultLongitude,string"`
+	DefaultAltitude  float32 `json:"defaultAltitude,string"`
+	DefaultAccuracy  float32 `json:"defaultAccuracy,string"`
+	Verbose          bool    `json:"verbose,string"`
+	DisplayVersion   bool    `json:"-"`
+	DryRun           bool    `json:"dryRun,string"`
 }
 
 // Load reads the configuration from /etc/geoclue-tz.conf
