@@ -1,20 +1,17 @@
 package cmd
 
 import (
-	"errors"
 	"fmt"
 	"os"
-	"os/user"
-	"strconv"
 	"unicode"
 
 	"github.com/spf13/cobra"
+	"github.com/zquestz/geoclue-tz/tz"
 )
 
 const (
-	appName        = "geoclue-tz"
-	version        = "0.0.1"
-	etcGeolocation = "/etc/geolocation"
+	appName = "geoclue-tz"
+	version = "0.5.0"
 )
 
 // Stores configuration data.
@@ -85,12 +82,12 @@ func performCommand(cmd *cobra.Command, args []string) error {
 		help(cmd, args)
 	}
 
-	entry, err := findTimezoneLatLong()
+	location, err := Location()
 	if err != nil {
 		return fmt.Errorf("unable to find location: %s", err)
 	}
 
-	err = writeGeolocation(entry)
+	err = location.WriteGeolocation(config.DryRun)
 	if err != nil {
 		return fmt.Errorf("unable to write /etc/geolocation: %s", err)
 	}
@@ -100,74 +97,37 @@ func performCommand(cmd *cobra.Command, args []string) error {
 
 // Find the lat/long entry for the current timezone
 // in /usr/share/zoneinfo/zone.tab.
-func findTimezoneLatLong() (*GeoClue, error) {
-	tz, err := LocalTZ()
+func Location() (*tz.Location, error) {
+	tzName, err := tz.LocalTZ()
 	if err != nil {
-		return defaultGeoClue(err)
+		return defaultLocation(err)
 	}
 
 	if config.Verbose {
-		fmt.Printf("Timezone: %s\n", tz)
+		fmt.Printf("Timezone: %s\n", tzName)
 	}
 
-	entry, err := zoneEntry(tz)
+	entry, err := tz.ZoneEntry(tzName, config.Verbose)
 	if err != nil {
-		return defaultGeoClue(err)
+		return defaultLocation(err)
 	}
 
 	if config.Verbose {
-		fmt.Printf("GeoClue: %#v\n", *entry)
+		fmt.Printf("Location: %#v\n", *entry)
 	}
 
 	return entry, nil
 }
 
-func writeGeolocation(g *GeoClue) error {
-	if config.DryRun {
-		return nil
-	}
-
-	currentUser, err := user.Current()
-	if err != nil {
-		return fmt.Errorf("unable to get current user: %s", err)
-	}
-
-	if currentUser.Uid != "0" {
-		return errors.New("root access required")
-	}
-
-	geoclueUser, err := user.Lookup("geoclue")
-	if err != nil {
-		return err
-	}
-
-	err = os.WriteFile(etcGeolocation, []byte(g.Output()), 0600)
-	if err != nil {
-		return err
-	}
-
-	geoclueUserId, err := strconv.ParseInt(geoclueUser.Uid, 10, 0)
-	if err != nil {
-		return err
-	}
-
-	err = os.Chown(etcGeolocation, int(geoclueUserId), 0)
-	if err != nil {
-		return err
-	}
-
-	return nil
-}
-
 // Returns the default values if provided,
 // otherwise just bubbles up the error.
-func defaultGeoClue(err error) (*GeoClue, error) {
+func defaultLocation(err error) (*tz.Location, error) {
 	if config.DefaultLatitude != 0 && config.DefaultLongitude != 0 {
 		if config.Verbose {
 			fmt.Printf("Error: defaults returned: %s\n", err)
 		}
 
-		return &GeoClue{
+		return &tz.Location{
 			Latitude:  config.DefaultLatitude,
 			Longitude: config.DefaultLongitude,
 			Altitude:  config.DefaultAltitude,

@@ -1,4 +1,4 @@
-package cmd
+package tz
 
 import (
 	"bufio"
@@ -11,7 +11,7 @@ import (
 
 const zonetab = "/usr/share/zoneinfo/zone.tab"
 
-func zoneEntry(name string) (*GeoClue, error) {
+func ZoneEntry(name string, verbose bool) (*Location, error) {
 	file, err := os.Open(zonetab)
 	if err != nil {
 		return nil, err
@@ -23,8 +23,8 @@ func zoneEntry(name string) (*GeoClue, error) {
 		row := strings.Split(scanner.Text(), "\t")
 
 		if len(row) >= 2 && row[2] == name {
-			if config.Verbose {
-				fmt.Printf("Zone Entry: %v\n", row)
+			if verbose {
+				fmt.Printf("Zone Entry: %#v\n", row)
 			}
 
 			r, err := regexp.Compile(`([+|-]\d+)([+|-]\d+)`)
@@ -47,7 +47,7 @@ func zoneEntry(name string) (*GeoClue, error) {
 				return nil, err
 			}
 
-			return &GeoClue{
+			return &Location{
 				Latitude:  lat,
 				Longitude: long,
 				Altitude:  0,
