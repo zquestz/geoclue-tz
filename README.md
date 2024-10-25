@@ -5,8 +5,6 @@
 Generate geoclue /etc/geolocation based on tz zone info.
 
 ```text
-Generate geoclue /etc/geolocation based on tz zone info.
-
 Usage:
   geoclue-tz [flags]
 
@@ -41,7 +39,7 @@ The following keys are supported:
 
 Here is a sample configuration, with a single custom location. The only required keys are `latitude`, `longitude`, and `name`.
 
-```
+```text
 locations [
   {
     latitude = 19.520960
