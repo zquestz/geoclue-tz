@@ -9,14 +9,15 @@ Usage:
   geoclue-tz [flags]
 
 Flags:
-      --default-accuracy float32    default accuracy
-      --default-altitude float32    default altitude
-      --default-latitude float32    default latitude
-      --default-longitude float32   default longitude
-  -d, --dry-run                     dry run mode
-  -h, --help                        help for geoclue-tz
-  -v, --verbose                     verbose mode
-      --version                     display version
+  -d, --dry-run                  dry run mode
+  -h, --help                     help for geoclue-tz
+      --home                     enable home configuration
+      --home-accuracy float32    home accuracy
+      --home-altitude float32    home altitude
+      --home-latitude float32    home latitude
+      --home-longitude float32   home longitude
+  -v, --verbose                  verbose mode
+      --version                  display version
 ```
 
 ## Install
@@ -29,19 +30,20 @@ go install github.com/zquestz/geoclue-tz@latest
 
 ## Configuration
 
-To setup your own default configuration just create `/etc/geoclue-tz.conf`. The configuration file is in UCL format.
+To setup your own home configuration just create `/etc/geoclue-tz.conf`. The configuration file is in UCL format. This makes it super easy to set the values for your home, and restore them whenever you want.
 
 For more information about UCL visit:
 [https://github.com/vstakhov/libucl](https://github.com/vstakhov/libucl)
 
 The following keys are supported:
 
-* defaultLatitude (default latitude if match isn't found)
-* defaultLongitude (default longitude if match isn't found)
-* defaultAltitude (default altitude if match isn't found)
-* defaultAccuracy (default accuracy if match isn't found)
-* verbose (verbose mode)
-* dryRun (dry run mode)
+* home - bool (enable home configuration)
+* homeLatitude - float32 (home latitude)
+* homeLongitude - float32 (home longitude)
+* homeAltitude - float32 (home altitude)
+* homeAccuracy - float32 (home accuracy)
+* verbose - bool (verbose mode)
+* dryRun - bool (dry run mode)
 
 ## License
 

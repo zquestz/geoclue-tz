@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"errors"
 	"fmt"
 	"os"
 	"unicode"
@@ -54,20 +55,22 @@ func capitalize(str string) string {
 }
 
 func prepareFlags() {
-	GenerateCmd.PersistentFlags().BoolVarP(
-		&config.DisplayVersion, "version", "", false, "display version")
+	GenerateCmd.PersistentFlags().BoolVar(
+		&config.DisplayVersion, "version", false, "display version")
 	GenerateCmd.PersistentFlags().BoolVarP(
 		&config.Verbose, "verbose", "v", config.Verbose, "verbose mode")
 	GenerateCmd.PersistentFlags().BoolVarP(
 		&config.DryRun, "dry-run", "d", config.DryRun, "dry run mode")
 	GenerateCmd.PersistentFlags().Float32VarP(
-		&config.DefaultLatitude, "default-latitude", "", config.DefaultLatitude, "default latitude")
+		&config.HomeLatitude, "home-latitude", "", config.HomeLatitude, "home latitude")
 	GenerateCmd.PersistentFlags().Float32VarP(
-		&config.DefaultLongitude, "default-longitude", "", config.DefaultLongitude, "default longitude")
+		&config.HomeLongitude, "home-longitude", "", config.HomeLongitude, "home longitude")
 	GenerateCmd.PersistentFlags().Float32VarP(
-		&config.DefaultAltitude, "default-altitude", "", config.DefaultAltitude, "default altitude")
+		&config.HomeAltitude, "home-altitude", "", config.HomeAltitude, "home altitude")
 	GenerateCmd.PersistentFlags().Float32VarP(
-		&config.DefaultAccuracy, "default-accuracy", "", config.DefaultAccuracy, "default accuracy")
+		&config.HomeAccuracy, "home-accuracy", "", config.HomeAccuracy, "home accuracy")
+	GenerateCmd.PersistentFlags().BoolVar(
+		&config.Home, "home", config.Home, "enable home configuration")
 }
 
 // Where all the work happens.
@@ -84,6 +87,20 @@ func performCommand(cmd *cobra.Command, args []string) error {
 
 	if config.DryRun {
 		config.Verbose = true
+	}
+
+	if config.Home {
+		location, err := homeLocation()
+		if err != nil {
+			return err
+		}
+
+		err = location.WriteGeolocation(config.DryRun)
+		if err != nil {
+			return fmt.Errorf("unable to write /etc/geolocation: %s", err)
+		}
+
+		return nil
 	}
 
 	location, err := Location()
@@ -104,7 +121,7 @@ func performCommand(cmd *cobra.Command, args []string) error {
 func Location() (*tz.Location, error) {
 	tzName, err := tz.LocalTZ()
 	if err != nil {
-		return defaultLocation(err)
+		return nil, err
 	}
 
 	if config.Verbose {
@@ -113,7 +130,7 @@ func Location() (*tz.Location, error) {
 
 	entry, err := tz.ZoneEntry(tzName, config.Verbose)
 	if err != nil {
-		return defaultLocation(err)
+		return nil, err
 	}
 
 	if config.Verbose {
@@ -123,22 +140,17 @@ func Location() (*tz.Location, error) {
 	return entry, nil
 }
 
-// Returns the default values if provided,
-// otherwise just bubbles up the error.
-func defaultLocation(err error) (*tz.Location, error) {
-	if config.DefaultLatitude != 0 && config.DefaultLongitude != 0 {
-		if config.Verbose {
-			fmt.Printf("Error: defaults returned: %s\n", err)
-		}
-
+// Returns the home location values if provided,
+func homeLocation() (*tz.Location, error) {
+	if config.HomeLatitude != 0 && config.HomeLongitude != 0 {
 		return &tz.Location{
-			Latitude:  config.DefaultLatitude,
-			Longitude: config.DefaultLongitude,
-			Altitude:  config.DefaultAltitude,
-			Accuracy:  config.DefaultAccuracy,
-			Name:      "Default",
+			Latitude:  config.HomeLatitude,
+			Longitude: config.HomeLongitude,
+			Altitude:  config.HomeAltitude,
+			Accuracy:  config.HomeAccuracy,
+			Name:      "Home",
 		}, nil
 	} else {
-		return nil, err
+		return nil, errors.New("home lat/long not provided")
 	}
 }
