@@ -64,7 +64,7 @@ func (l *Location) WriteGeolocation(dryRun bool) error {
 // for /etc/geolocation.
 func (l *Location) Output() string {
 	return fmt.Sprintf(
-		"%f\n%f\n%f\n%f",
+		"%v\n%v\n%v\n%v",
 		l.Latitude,
 		l.Longitude,
 		l.Altitude,
