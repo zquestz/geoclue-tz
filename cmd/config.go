@@ -5,19 +5,16 @@ import (
 	"os"
 	"path/filepath"
 
+	"github.com/zquestz/geoclue-tz/tz"
 	"github.com/zquestz/go-ucl"
 )
 
 // Config stores all the application configuration.
 type Config struct {
-	HomeLatitude   float32 `json:"homeLatitude,string"`
-	HomeLongitude  float32 `json:"homeLongitude,string"`
-	HomeAltitude   float32 `json:"homeAltitude,string"`
-	HomeAccuracy   float32 `json:"homeAccuracy,string"`
-	Verbose        bool    `json:"verbose,string"`
-	DisplayVersion bool    `json:"-"`
-	Home           bool    `json:"home,string"`
-	DryRun         bool    `json:"dryRun,string"`
+	Locations      []*tz.Location `json:"locations"`
+	DisplayVersion bool           `json:"-"`
+	Location       string         `json:"location"`
+	DryRun         bool           `json:"dryRun,string"`
 }
 
 // Load reads the configuration from /etc/geoclue-tz.conf

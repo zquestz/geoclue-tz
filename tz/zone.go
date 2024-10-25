@@ -11,7 +11,7 @@ import (
 
 const zonetab = "/usr/share/zoneinfo/zone.tab"
 
-func ZoneEntry(name string, verbose bool) (*Location, error) {
+func ZoneEntry(name string, dryRun bool) (*Location, error) {
 	file, err := os.Open(zonetab)
 	if err != nil {
 		return nil, err
@@ -23,7 +23,7 @@ func ZoneEntry(name string, verbose bool) (*Location, error) {
 		row := strings.Split(scanner.Text(), "\t")
 
 		if len(row) >= 2 && row[2] == name {
-			if verbose {
+			if dryRun {
 				fmt.Printf("Zone Entry: %#v\n", row)
 			}
 

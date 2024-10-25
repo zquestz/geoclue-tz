@@ -14,11 +14,11 @@ const (
 
 // Location stores location information.
 type Location struct {
-	Latitude  float32
-	Longitude float32
-	Altitude  float32
-	Accuracy  float32
-	Name      string
+	Latitude  float32 `json:"latitude,string"`
+	Longitude float32 `json:"longitude,string"`
+	Altitude  float32 `json:"altitude,string"`
+	Accuracy  float32 `json:"accuracy,string"`
+	Name      string  `json:"name"`
 }
 
 func (l *Location) WriteGeolocation(dryRun bool) error {

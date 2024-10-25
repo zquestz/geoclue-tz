@@ -1,9 +1,9 @@
 package cmd
 
 import (
-	"errors"
 	"fmt"
 	"os"
+	"strings"
 	"unicode"
 
 	"github.com/spf13/cobra"
@@ -21,8 +21,8 @@ var config Config
 // GenerateCmd is the main command for Cobra.
 var GenerateCmd = &cobra.Command{
 	Use:   "geoclue-tz",
-	Short: "Generate /etc/geolocation from timezone.",
-	Long:  `Generate /etc/geolocation from timezone.`,
+	Short: "Generate geoclue /etc/geolocation based on tz zone info.",
+	Long:  `Generate geoclue /etc/geolocation based on tz zone info.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		err := performCommand(cmd, args)
 		if err != nil {
@@ -58,19 +58,9 @@ func prepareFlags() {
 	GenerateCmd.PersistentFlags().BoolVar(
 		&config.DisplayVersion, "version", false, "display version")
 	GenerateCmd.PersistentFlags().BoolVarP(
-		&config.Verbose, "verbose", "v", config.Verbose, "verbose mode")
-	GenerateCmd.PersistentFlags().BoolVarP(
-		&config.DryRun, "dry-run", "d", config.DryRun, "dry run mode")
-	GenerateCmd.PersistentFlags().Float32VarP(
-		&config.HomeLatitude, "home-latitude", "", config.HomeLatitude, "home latitude")
-	GenerateCmd.PersistentFlags().Float32VarP(
-		&config.HomeLongitude, "home-longitude", "", config.HomeLongitude, "home longitude")
-	GenerateCmd.PersistentFlags().Float32VarP(
-		&config.HomeAltitude, "home-altitude", "", config.HomeAltitude, "home altitude")
-	GenerateCmd.PersistentFlags().Float32VarP(
-		&config.HomeAccuracy, "home-accuracy", "", config.HomeAccuracy, "home accuracy")
-	GenerateCmd.PersistentFlags().BoolVar(
-		&config.Home, "home", config.Home, "enable home configuration")
+		&config.DryRun, "dry-run", "d", config.DryRun, "dry run debug mode")
+	GenerateCmd.PersistentFlags().StringVarP(
+		&config.Location, "location", "l", config.Location, "enable custom location")
 }
 
 // Where all the work happens.
@@ -85,12 +75,8 @@ func performCommand(cmd *cobra.Command, args []string) error {
 		help(cmd, args)
 	}
 
-	if config.DryRun {
-		config.Verbose = true
-	}
-
-	if config.Home {
-		location, err := homeLocation()
+	if config.Location != "" {
+		location, err := buildLocation(config.Location)
 		if err != nil {
 			return err
 		}
@@ -124,33 +110,45 @@ func Location() (*tz.Location, error) {
 		return nil, err
 	}
 
-	if config.Verbose {
+	if config.DryRun {
 		fmt.Printf("Timezone: %s\n", tzName)
 	}
 
-	entry, err := tz.ZoneEntry(tzName, config.Verbose)
+	entry, err := tz.ZoneEntry(tzName, config.DryRun)
 	if err != nil {
 		return nil, err
 	}
 
-	if config.Verbose {
+	if config.DryRun {
 		fmt.Printf("Location: %#v\n", *entry)
 	}
 
 	return entry, nil
 }
 
-// Returns the home location values if provided,
-func homeLocation() (*tz.Location, error) {
-	if config.HomeLatitude != 0 && config.HomeLongitude != 0 {
-		return &tz.Location{
-			Latitude:  config.HomeLatitude,
-			Longitude: config.HomeLongitude,
-			Altitude:  config.HomeAltitude,
-			Accuracy:  config.HomeAccuracy,
-			Name:      "Home",
-		}, nil
-	} else {
-		return nil, errors.New("home lat/long not provided")
+// Returns the custom location,
+func buildLocation(location string) (*tz.Location, error) {
+	for _, loc := range config.Locations {
+		if strings.ToLower(loc.Name) == strings.ToLower(location) {
+			if loc.Latitude != 0 && loc.Longitude != 0 {
+				l := &tz.Location{
+					Latitude:  loc.Latitude,
+					Longitude: loc.Longitude,
+					Altitude:  loc.Altitude,
+					Accuracy:  loc.Accuracy,
+					Name:      loc.Name,
+				}
+
+				if config.DryRun {
+					fmt.Printf("Location: %#v\n", *l)
+				}
+
+				return l, nil
+			}
+
+			return nil, fmt.Errorf("location lat/long not provided: %s", location)
+		}
 	}
+
+	return nil, fmt.Errorf("location not found: %s", location)
 }

@@ -2,22 +2,17 @@
 
 [![License][License-Image]][License-URL] [![ReportCard][ReportCard-Image]][ReportCard-URL] [![Build][Build-Status-Image]][Build-Status-URL]
 
-Write geoclue /etc/geolocation based on tz zone info.
+Generate geoclue /etc/geolocation based on tz zone info.
 
 ```text
 Usage:
   geoclue-tz [flags]
 
 Flags:
-  -d, --dry-run                  dry run mode
-  -h, --help                     help for geoclue-tz
-      --home                     enable home configuration
-      --home-accuracy float32    home accuracy
-      --home-altitude float32    home altitude
-      --home-latitude float32    home latitude
-      --home-longitude float32   home longitude
-  -v, --verbose                  verbose mode
-      --version                  display version
+  -d, --dry-run           dry run debug mode
+  -h, --help              help for geoclue-tz
+  -l, --location string   enable custom location
+      --version           display version
 ```
 
 ## Install
@@ -30,20 +25,30 @@ go install github.com/zquestz/geoclue-tz@latest
 
 ## Configuration
 
-To setup your own home configuration just create `/etc/geoclue-tz.conf`. The configuration file is in UCL format. This makes it super easy to set the values for your home, and restore them whenever you want.
+To setup your own configuration just create `/etc/geoclue-tz.conf`. The configuration file is in UCL format. This makes it super easy to set the values for your custom locations, and restore them whenever you want.
 
 For more information about UCL visit:
 [https://github.com/vstakhov/libucl](https://github.com/vstakhov/libucl)
 
 The following keys are supported:
 
-* home - bool (enable home configuration)
-* homeLatitude - float32 (home latitude)
-* homeLongitude - float32 (home longitude)
-* homeAltitude - float32 (home altitude)
-* homeAccuracy - float32 (home accuracy)
+* locations - array (custom locations)
 * verbose - bool (verbose mode)
 * dryRun - bool (dry run mode)
+
+Here is a sample configuration, with a single custom location. The only required keys are `latitude`, `longitude`, and `name`.
+
+```
+locations [
+  {
+    latitude = 19.520960
+    longitude = 155.920517
+    altitude = 0
+    accuracy = 1000
+    name = home
+  }
+]
+```
 
 ## License
 
