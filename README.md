@@ -13,7 +13,7 @@ Flags:
       --default-altitude float32    default altitude
       --default-latitude float32    default latitude
       --default-longitude float32   default longitude
-  -d, --dryrun                      dryrun mode
+  -d, --dry-run                     dry run mode
   -h, --help                        help for geoclue-tz
   -v, --verbose                     verbose mode
       --version                     display version
@@ -41,7 +41,7 @@ The following keys are supported:
 * defaultAltitude (default altitude if match isn't found)
 * defaultAccuracy (default accuracy if match isn't found)
 * verbose (verbose mode)
-* dryRun (dryrun mode)
+* dryRun (dry run mode)
 
 ## License
 

@@ -62,7 +62,7 @@ func prepareFlags() {
 	GenerateCmd.PersistentFlags().BoolVarP(
 		&config.Verbose, "verbose", "v", config.Verbose, "verbose mode")
 	GenerateCmd.PersistentFlags().BoolVarP(
-		&config.DryRun, "dryrun", "d", config.DryRun, "dryrun mode")
+		&config.DryRun, "dry-run", "d", config.DryRun, "dry run mode")
 	GenerateCmd.PersistentFlags().Float32VarP(
 		&config.DefaultLatitude, "default-latitude", "", config.DefaultLatitude, "default latitude")
 	GenerateCmd.PersistentFlags().Float32VarP(
