@@ -12,6 +12,8 @@ import (
 type Config struct {
 	DefaultLatitude  float32 `json:"defaultLatitude"`
 	DefaultLongitude float32 `json:"defaultLongitude"`
+	DefaultAltitude  float32 `json:"defaultAltitude"`
+	DefaultAccuracy  float32 `json:"defaultAccuracy"`
 	Verbose          bool    `json:"verbose"`
 	DisplayVersion   bool    `json:"version"`
 	DryRun           bool    `json:"dryRun"`
