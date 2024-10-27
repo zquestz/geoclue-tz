@@ -105,11 +105,11 @@ geoclue-tz --completion fish > ~/.config/fish/completions/geoclue-tz.fish
 
 geoclue-tz is released under the MIT license.
 
-[License-URL]: http://opensource.org/licenses/MIT
+[License-URL]: https://opensource.org/licenses/MIT
 [License-Image]: https://img.shields.io/npm/l/express.svg
-[ReportCard-URL]: http://goreportcard.com/report/zquestz/geoclue-tz
+[ReportCard-URL]: https://goreportcard.com/report/zquestz/geoclue-tz
 [ReportCard-Image]: https://goreportcard.com/badge/github.com/zquestz/geoclue-tz
 [Build-Status-URL]: https://app.travis-ci.com/github/zquestz/geoclue-tz
 [Build-Status-Image]: https://app.travis-ci.com/zquestz/geoclue-tz.svg?branch=main
 [Release-URL]: https://github.com/zquestz/geoclue-tz/releases/tag/v1.0.0
-[Release-Image]: http://img.shields.io/badge/geoclue-tz-v1.0.0-1eb0fc.svg
+[Release-Image]: https://img.shields.io/badge/geoclue--tz-v1.0.0-1eb0fc.svg
