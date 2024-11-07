@@ -21,13 +21,13 @@ Flags:
 Update `/etc/geolocation` based on the current time zone.
 
 ```zsh
-geoclue-tz
+sudo geoclue-tz
 ```
 
 Update `/etc/geolocation` based on your custom home location.
 
 ```zsh
-geoclue-tz -l home
+sudo geoclue-tz -l home
 ```
 
 ## Install
@@ -36,6 +36,7 @@ Make sure that `GOPATH` and `GOBIN` env vars are set. Then run:
 
 ```zsh
 go install github.com/zquestz/geoclue-tz@latest
+sudo cp $GOPATH/bin/geoclue-tz /usr/bin
 ```
 
 Arch Linux users can install from the AUR:
@@ -75,16 +76,10 @@ locations [
 
 To set up autocompletion:
 
-### Bash Linux
+### Bash
 
 ```zsh
-geoclue-tz --completion bash > /etc/bash_completion.d/geoclue-tz
-```
-
-### Bash MacOS
-
-```zsh
-geoclue-tz --completion bash > /usr/local/etc/bash_completion.d/geoclue-tz
+sudo bash -c "geoclue-tz --completion bash > /etc/bash_completion.d/geoclue-tz"
 ```
 
 ### Zsh
@@ -92,7 +87,7 @@ geoclue-tz --completion bash > /usr/local/etc/bash_completion.d/geoclue-tz
 Generate a `_geoclue-tz` completion script and put it somewhere in your `$fpath`:
 
 ```zsh
-geoclue-tz --completion zsh > /usr/local/share/zsh/site-functions/_geoclue-tz
+sudo zsh -c "geoclue-tz --completion zsh > /usr/share/zsh/site-functions/_geoclue-tz"
 ```
 
 ### Fish
