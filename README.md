@@ -104,7 +104,7 @@ geoclue-tz is released under the MIT license.
 [License-Image]: https://img.shields.io/npm/l/express.svg
 [ReportCard-URL]: https://goreportcard.com/report/zquestz/geoclue-tz
 [ReportCard-Image]: https://goreportcard.com/badge/github.com/zquestz/geoclue-tz
-[Build-Status-URL]: https://app.travis-ci.com/github/zquestz/geoclue-tz
-[Build-Status-Image]: https://app.travis-ci.com/zquestz/geoclue-tz.svg?branch=main
+[Build-Status-URL]: https://github.com/zquestz/geoclue-tz/actions/workflows/ci.yml
+[Build-Status-Image]: https://img.shields.io/github/actions/workflow/status/zquestz/geoclue-tz/ci.yml?branch=main
 [Release-URL]: https://github.com/zquestz/geoclue-tz/releases/tag/v1.0.0
 [Release-Image]: https://img.shields.io/badge/geoclue--tz-v1.0.0-1eb0fc.svg
